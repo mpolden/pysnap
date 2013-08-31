@@ -39,6 +39,8 @@ if __name__ == '__main__':
         sys.exit(1)
 
     for snap in s.get_updates()['snaps']:
+        if not 'sn' in snap:
+            continue
         filename = '{user}_{id}.jpg'.format(user=snap['sn'], id=snap['id'])
         abspath = os.path.abspath(os.path.join(path, filename))
         if os.path.isfile(abspath):
