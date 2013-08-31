@@ -17,10 +17,8 @@ HASH_PATTERN = ('00011101111011100011110101011110'
 def make_request_token(a, b):
     hash_a = sha256(SECRET + a).hexdigest()
     hash_b = sha256(b + SECRET).hexdigest()
-    result = [None] * len(HASH_PATTERN)
-    for i, c in enumerate(HASH_PATTERN):
-        result[i] = hash_b[i] if c == '1' else hash_a[i]
-    return ''.join(result)
+    return ''.join((hash_b[i] if c == '1' else hash_a[i]
+                    for i, c in enumerate(HASH_PATTERN)))
 
 
 def pkcs5_pad(data, blocksize=16):
