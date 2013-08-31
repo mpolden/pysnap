@@ -39,11 +39,13 @@ if __name__ == '__main__':
         sys.exit(1)
 
     for snap in s.get_updates()['snaps']:
+        filename = '{user}_{id}.jpg'.format(user=snap['sn'], id=snap['id'])
+        abspath = os.path.abspath(os.path.join(path, filename))
+        if os.path.isfile(abspath):
+            continue
         data = s.get_blob(snap['id'])
         if data is None:
             continue
-        filename = '{user}_{id}.jpg'.format(user=snap['sn'], id=snap['id'])
-        abspath = os.path.abspath(os.path.join(path, filename))
         with open(abspath, 'w') as f:
             f.write(data)
             if not quiet:
