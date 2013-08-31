@@ -1,6 +1,7 @@
 pysnap
 ======
-Implementation of Snapchat API in Python.
+Implementation of Snapchat API in Python. Partially based on
+https://github.com/dstelljes/php-snapchat
 
 Dependencies
 ------------
