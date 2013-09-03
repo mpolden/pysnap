@@ -54,7 +54,7 @@ class Snapchat(object):
         self.username = username
         self.password = password
 
-    def _request(self, endpoint, data=None):
+    def _request(self, endpoint, data=None, raise_for_status=True):
         now = timestamp()
         if data is None:
             data = {}
@@ -64,7 +64,10 @@ class Snapchat(object):
             'req_token': make_request_token(
                 getattr(self, 'auth_token', STATIC_TOKEN), str(now))
         })
-        return requests.post(urljoin(URL, endpoint), data=data)
+        r = requests.post(urljoin(URL, endpoint), data=data)
+        if raise_for_status:
+            r.raise_for_status()
+        return r
 
     def login(self):
         r = self._request('login', {'password': self.password})
@@ -75,7 +78,7 @@ class Snapchat(object):
 
     def logout(self):
         r = self._request('logout')
-        return r.status_code == 200
+        return len(r.content) == 0
 
     def get_updates(self, update_timestamp=0):
         r = self._request('updates', {'update_timestamp': update_timestamp})
@@ -85,6 +88,6 @@ class Snapchat(object):
         return result
 
     def get_blob(self, snap_id):
-        r = self._request('blob', {'id': snap_id})
+        r = self._request('blob', data={'id': snap_id}, raise_for_status=False)
         data = decrypt(r.content)
         return data if is_image(data) or is_video(data) else None
