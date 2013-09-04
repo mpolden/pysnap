@@ -12,6 +12,8 @@ STATIC_TOKEN = 'm198sOkJEn37DjqZ32lpRu76xmw288xSQ9'
 BLOB_ENCRYPTION_KEY = 'M02cnQ51Ji97vwT4'
 HASH_PATTERN = ('00011101111011100011110101011110'
                 '11010001001110011000110001000110')
+MEDIA_IMAGE = 0
+MEDIA_VIDEO = 1
 
 
 def make_request_token(a, b):
@@ -32,6 +34,14 @@ def is_video(data):
 
 def is_image(data):
     return len(data) > 1 and data[0] == chr(0xFF) and data[1] == chr(0xD8)
+
+
+def get_file_extension(media_type):
+    if media_type == MEDIA_VIDEO:
+        return 'mp4'
+    if media_type == MEDIA_IMAGE:
+        return 'jpg'
+    return ''
 
 
 def decrypt(data):

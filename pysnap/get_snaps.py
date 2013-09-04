@@ -17,7 +17,7 @@ import os.path
 import sys
 from docopt import docopt
 from getpass import getpass
-from pysnap import Snapchat
+from pysnap import Snapchat, get_file_extension
 
 if __name__ == '__main__':
     arguments = docopt(__doc__)
@@ -38,10 +38,9 @@ if __name__ == '__main__':
         print('Invalid username or password')
         sys.exit(1)
 
-    for snap in s.get_updates()['snaps']:
-        if not 'sn' in snap:
-            continue
-        filename = '{user}_{id}.jpg'.format(user=snap['sn'], id=snap['id'])
+    for snap in s.get_snaps():
+        filename = '{0}_{1}.{2}'.format(snap['sender'], snap['id'],
+                                        get_file_extension(snap['media_type']))
         abspath = os.path.abspath(os.path.join(path, filename))
         if os.path.isfile(abspath):
             continue
