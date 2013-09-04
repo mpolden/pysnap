@@ -104,7 +104,6 @@ class Snapchat(object):
         if data is None:
             data = {}
         data.update({
-            'username': self.username,
             'timestamp': now,
             'req_token': make_request_token(
                 getattr(self, 'auth_token', STATIC_TOKEN), str(now))
@@ -116,13 +115,16 @@ class Snapchat(object):
 
     def login(self):
         """Login to Snapchat account
-        Returns a dict containing user information on successful login, the data
-        return is similar to get_updates.
+        Returns a dict containing user information on successful login, the
+        data return is similar to get_updates.
 
         :param username Snapchat username
         :param password Snapchat password
         """
-        r = self._request('login', {'password': self.password})
+        r = self._request('login', {
+            'username': username,
+            'password': password
+            })
         result = r.json()
         if 'auth_token' in result:
             self.auth_token = result['auth_token']
@@ -132,7 +134,7 @@ class Snapchat(object):
         """Logout of Snapchat account
         Returns true if logout was successful.
         """
-        r = self._request('logout')
+        r = self._request('logout', {'username': self.username})
         return len(r.content) == 0
 
     def get_updates(self, update_timestamp=0):
@@ -142,7 +144,10 @@ class Snapchat(object):
         :param update_timestamp: Optional timestamp (epoch in seconds) to limit
                                  updates
         """
-        r = self._request('updates', {'update_timestamp': update_timestamp})
+        r = self._request('updates', {
+            'username': self.username,
+            'update_timestamp': update_timestamp
+            })
         result = r.json()
         if 'auth_token' in result:
             self.auth_token = result['auth_token']
@@ -162,11 +167,12 @@ class Snapchat(object):
 
     def get_blob(self, snap_id):
         """Get the image or video of a given snap
-        Returns the decrypted image or a video of the given snap or None if data
-        is invalid.
+        Returns the decrypted image or a video of the given snap or None if
+        data is invalid.
 
         :param snap_id: Snap id to fetch
         """
-        r = self._request('blob', data={'id': snap_id}, raise_for_status=False)
+        r = self._request('blob', {'username': self.username, 'id': snap_id},
+                          raise_for_status=False)
         data = decrypt(r.content)
         return data if is_image(data) or is_video(data) else None
