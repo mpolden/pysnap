@@ -174,3 +174,32 @@ class Snapchat(object):
                           raise_for_status=False)
         data = decrypt(r.content)
         return data if is_image(data) or is_video(data) else None
+
+    def register(self, username, password, email, birthday):
+        """Register a new Snapchat account
+        Returns a dict contatining user information on success and False on
+        failure.
+
+        :param username: Username
+        :param password: Password
+        :param email: Email address
+        :param birthday: Birthday (yyyy-mm-dd)
+        """
+        r = self._request('register', {
+            'birthday': birthday,
+            'password': password,
+            'email': email
+            })
+        if not 'token' in r.json():
+            return False
+
+        r = self._request('registeru', {
+            'email': email,
+            'username': username
+            })
+        result = r.json()
+        if 'auth_token' in result:
+            self.auth_token = result['auth_token']
+        if 'username' in result:
+            self.username = result['username']
+        return result
