@@ -48,6 +48,21 @@ def timestamp():
     return int(round(time() * 1000))
 
 
+def _map_keys(snap):
+    return {
+        u'id': snap.get('id', None),
+        u'media_id': snap.get('c_id', None),
+        u'media_type': snap.get('m', None),
+        u'time': snap.get('t', None),
+        u'sender': snap.get('sn', None),
+        u'recipient': snap.get('rp', None),
+        u'status': snap.get('st', None),
+        u'screenshot_count': snap.get('c', None),
+        u'sent': snap.get('sts', None),
+        u'opened': snap.get('ts', None)
+    }
+
+
 class Snapchat(object):
 
     def __init__(self, username, password):
@@ -86,6 +101,12 @@ class Snapchat(object):
         if 'auth_token' in result:
             self.auth_token = result['auth_token']
         return result
+
+    def get_snaps(self, update_timestamp=0):
+        updates = self.get_updates(update_timestamp)
+        # Filter out snaps containing c_id as these are sent snaps
+        return [_map_keys(snap) for snap in updates['snaps']
+                if not 'c_id' in snap]
 
     def get_blob(self, snap_id):
         r = self._request('blob', data={'id': snap_id}, raise_for_status=False)
