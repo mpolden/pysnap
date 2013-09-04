@@ -19,7 +19,8 @@ from docopt import docopt
 from getpass import getpass
 from pysnap import Snapchat, get_file_extension
 
-if __name__ == '__main__':
+
+def main():
     arguments = docopt(__doc__)
     quiet = arguments['--quiet']
     username = arguments['--username']
@@ -33,8 +34,8 @@ if __name__ == '__main__':
         print('No such directory: {0}'.format(arguments['<path>']))
         sys.exit(1)
 
-    s = Snapchat(username, password)
-    if not s.login().get('logged'):
+    s = Snapchat()
+    if not s.login(username, password).get('logged'):
         print('Invalid username or password')
         sys.exit(1)
 
@@ -51,3 +52,7 @@ if __name__ == '__main__':
             f.write(data)
             if not quiet:
                 print('Saved: {0}'.format(abspath))
+
+
+if __name__ == '__main__':
+    main()

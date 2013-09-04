@@ -77,20 +77,16 @@ class Snapchat(object):
     """Construct a :class:`Snapchat` object used for communicating
     with the Snapchat API.
 
-    :param username: Snapchat username
-    :param password: Snapchat password
-
     Usage:
 
         from pysnap import Snapchat
-        snapchat = Snapchat('username', 'password')
-        snapchat.login()
+        snapchat = Snapchat()
+        snapchat.login('username', 'password')
         ...
 
     """
-    def __init__(self, username, password):
-        self.username = username
-        self.password = password
+    def __init__(self):
+        self.username = None
 
     def _request(self, endpoint, data=None, raise_for_status=True):
         """Wrapper method for calling Snapchat API which adds required form
@@ -113,7 +109,7 @@ class Snapchat(object):
             r.raise_for_status()
         return r
 
-    def login(self):
+    def login(self, username, password):
         """Login to Snapchat account
         Returns a dict containing user information on successful login, the
         data return is similar to get_updates.
@@ -128,6 +124,8 @@ class Snapchat(object):
         result = r.json()
         if 'auth_token' in result:
             self.auth_token = result['auth_token']
+        if 'username' in result:
+            self.username = username
         return result
 
     def logout(self):
