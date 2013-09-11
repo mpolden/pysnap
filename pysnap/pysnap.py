@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import json
 from hashlib import sha256
 from time import time
 
@@ -203,3 +204,40 @@ class Snapchat(object):
         if 'username' in result:
             self.username = result['username']
         return result
+
+    def send_events(self, events, data=None):
+        """Send event data
+        Returns true on success.
+
+        :param events: List of events to send
+        :param data: Additional data to send
+        """
+        if data is None:
+            data = {}
+        r = self._request('update_snaps', {
+            'username': self.username,
+            'events': json.dumps(events),
+            'json': json.dumps(data)
+        })
+        return len(r.content) == 0
+
+    def mark_viewed(self, snap_id, view_duration=1):
+        """Mark a snap as mark_viewed
+        Returns true on success.
+
+        :param snap_id: Snap id to mark as viewed
+        :param view_duration: Number of seconds snap was viewed
+        """
+        now = time()
+        data = {snap_id: {u't': now, u'sv': view_duration}}
+        events = [
+            {
+                u'eventName': u'SNAP_VIEW', u'params': {u'id': snap_id},
+                u'ts': int(round(now)) - view_duration
+            },
+            {
+                u'eventName': u'SNAP_EXPIRED', u'params': {u'id': snap_id},
+                u'ts': int(round(now))
+            }
+        ]
+        return self.send_events(events, data)
