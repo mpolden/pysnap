@@ -51,7 +51,7 @@ def main():
         data = s.get_blob(snap['id'])
         if data is None:
             continue
-        with open(abspath, 'w') as f:
+        with open(abspath, 'wb') as f:
             f.write(data)
             if not quiet:
                 print('Saved: {0}'.format(abspath))

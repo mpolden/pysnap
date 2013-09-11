@@ -12,20 +12,20 @@ class Snapchat(unittest.TestCase):
                           '4ea513dbb7b34'), make_request_token('foo', 'bar'))
 
     def test_is_image(self):
-        self.assertFalse(is_image([]))
-        self.assertFalse(is_image([None]))
-        self.assertFalse(is_image([None, None]))
-        self.assertTrue(is_image([chr(0xFF), chr(0xD8)]))
+        self.assertFalse(is_image(b''))
+        self.assertFalse(is_image(b'\x00'))
+        self.assertFalse(is_image(b'\x00\x00'))
+        self.assertTrue(is_image(b'\xFF\xD8'))
 
     def test_is_video(self):
-        self.assertFalse(is_video([]))
-        self.assertFalse(is_video([None]))
-        self.assertFalse(is_video([None, None]))
-        self.assertTrue(is_video([chr(0x00), chr(0x00)]))
+        self.assertFalse(is_video(b''))
+        self.assertFalse(is_video(b'\xFF'))
+        self.assertFalse(is_video(b'\xFF\xFF'))
+        self.assertTrue(is_video(b'\x00\x00'))
 
     def test_pkcs5_pad(self):
-        self.assertEqual('\x10' * 16, pkcs5_pad(''))
-        self.assertEqual('foo\r\r\r\r\r\r\r\r\r\r\r\r\r', pkcs5_pad('foo'))
+        self.assertEqual(b'\x10' * 16, pkcs5_pad(b''))
+        self.assertEqual(b'foo\r\r\r\r\r\r\r\r\r\r\r\r\r', pkcs5_pad(b'foo'))
 
 
 if __name__ == '__main__':

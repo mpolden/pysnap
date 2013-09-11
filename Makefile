@@ -2,6 +2,7 @@ all: lint test
 
 test:
 	python pysnap/tests.py
+	python3 pysnap/tests.py
 
 lint:
 	isort pysnap/*.py
