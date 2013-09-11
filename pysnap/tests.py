@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 import unittest
-from pysnap import make_request_token, is_image, is_video, pkcs5_pad
+
+from pysnap import is_image, is_video, make_request_token, pkcs5_pad
 
 
 class Snapchat(unittest.TestCase):

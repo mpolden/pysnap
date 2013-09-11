@@ -13,11 +13,14 @@ Options:
 
 """
 from __future__ import print_function
+
 import os.path
 import sys
-from docopt import docopt
 from getpass import getpass
-from pysnap import Snapchat, get_file_extension
+
+from docopt import docopt
+
+from pysnap import get_file_extension, Snapchat
 
 
 def main():

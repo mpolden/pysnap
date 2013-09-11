@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
-import requests
-from Crypto.Cipher import AES
 from hashlib import sha256
 from time import time
 from urlparse import urljoin
+
+import requests
+from Crypto.Cipher import AES
 
 URL = 'https://feelinsonice-hrd.appspot.com/bq/'
 SECRET = 'iEk21fuwZApXlz93750dmW22pw389dPwOk'
