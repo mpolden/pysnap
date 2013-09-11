@@ -222,7 +222,7 @@ class Snapchat(object):
         return len(r.content) == 0
 
     def mark_viewed(self, snap_id, view_duration=1):
-        """Mark a snap as mark_viewed
+        """Mark a snap as viewed
         Returns true on success.
 
         :param snap_id: Snap id to mark as viewed
