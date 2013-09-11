@@ -1,7 +1,13 @@
+argparse==1.2.1
 bpython==0.12
 flake8==2.0
+isort==1.2.4
 mccabe==0.2.1
+natsort==3.0.1
+ordereddict==1.1
 pep8==1.4.6
+pies2overrides==1.0.0
+pies==1.0.3
 pip-tools==0.3.4
 pyflakes==0.7.3
 Pygments==1.6
