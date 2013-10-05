@@ -241,3 +241,17 @@ class Snapchat(object):
             }
         ]
         return self.send_events(events, data)
+
+    def update_privacy(self, friends_only):
+        """Set privacy settings
+        Returns true on success.
+
+        :param friends_only: True to allow snaps from friends only
+        """
+        setting = lambda f: '1' if f else '0'
+        r = self._request('settings', {
+            'username': self.username,
+            'action': 'updatePrivacy',
+            'privacySetting': setting(friends_only)
+        })
+        return r.json().get('param') == setting(friends_only)
