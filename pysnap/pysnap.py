@@ -88,6 +88,7 @@ class Snapchat(object):
     """
     def __init__(self):
         self.username = None
+        self.auth_token = None
 
     def _request(self, endpoint, data=None, raise_for_status=True):
         """Wrapper method for calling Snapchat API which adds required form
@@ -102,13 +103,17 @@ class Snapchat(object):
             data = {}
         data.update({
             'timestamp': now,
-            'req_token': make_request_token(
-                getattr(self, 'auth_token', STATIC_TOKEN), str(now))
+            'req_token': make_request_token(self.auth_token or STATIC_TOKEN,
+                                            str(now))
         })
         r = requests.post(URL + endpoint, data=data)
         if raise_for_status:
             r.raise_for_status()
         return r
+
+    def _unset_auth(self):
+        self.username = None
+        self.auth_token = None
 
     def login(self, username, password):
         """Login to Snapchat account
@@ -118,6 +123,7 @@ class Snapchat(object):
         :param username Snapchat username
         :param password Snapchat password
         """
+        self._unset_auth()
         r = self._request('login', {
             'username': username,
             'password': password
