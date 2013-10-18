@@ -1,2 +1,3 @@
 *.pyc
 .vagrant/
+pysnap.egg-info
