@@ -263,3 +263,9 @@ class Snapchat(object):
             'privacySetting': setting(friends_only)
         })
         return r.json().get('param') == str(setting(friends_only))
+
+    def get_friends(self):
+        """Get friends
+        Returns a list of friends.
+        """
+        return self.get_updates().get('friends', [])
