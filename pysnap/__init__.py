@@ -15,6 +15,8 @@ HASH_PATTERN = ('00011101111011100011110101011110'
                 '11010001001110011000110001000110')
 MEDIA_IMAGE = 0
 MEDIA_VIDEO = 1
+PRIVACY_EVERYONE = 0
+PRIVACY_FRIENDS = 1
 
 
 def make_request_token(a, b):
@@ -254,10 +256,10 @@ class Snapchat(object):
 
         :param friends_only: True to allow snaps from friends only
         """
-        setting = lambda f: '1' if f else '0'
+        setting = lambda f: PRIVACY_FRIENDS if f else PRIVACY_EVERYONE
         r = self._request('settings', {
             'username': self.username,
             'action': 'updatePrivacy',
             'privacySetting': setting(friends_only)
         })
-        return r.json().get('param') == setting(friends_only)
+        return r.json().get('param') == str(setting(friends_only))
