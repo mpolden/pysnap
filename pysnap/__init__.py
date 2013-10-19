@@ -15,6 +15,9 @@ HASH_PATTERN = ('00011101111011100011110101011110'
                 '11010001001110011000110001000110')
 MEDIA_IMAGE = 0
 MEDIA_VIDEO = 1
+FRIEND_CONFIRMED = 0
+FRIEND_UNCONFIRMED = 1
+FRIEND_BLOCKED = 2
 PRIVACY_EVERYONE = 0
 PRIVACY_FRIENDS = 1
 
@@ -269,3 +272,35 @@ class Snapchat(object):
         Returns a list of friends.
         """
         return self.get_updates().get('friends', [])
+
+    def block(self, username):
+        """Block a user
+        Returns true on success.
+
+        :param username: Username to block
+        """
+        r = self._request('friend', {
+            'action': 'block',
+            'friend': username,
+            'username': self.username
+        })
+        return r.json().get('message') == '{0} was blocked'.format(username)
+
+    def unblock(self, username):
+        """Unblock a user
+        Returns true on success.
+
+        :param username: Username to unblock
+        """
+        r = self._request('friend', {
+            'action': 'unblock',
+            'friend': username,
+            'username': self.username
+        })
+        return r.json().get('message') == '{0} was unblocked'.format(username)
+
+    def get_blocked(self):
+        """Find blocked users
+        Returns a list of currently blocked users.
+        """
+        return [f for f in self.get_friends() if f['type'] == FRIEND_BLOCKED]
