@@ -1,0 +1,30 @@
+---
+- name: hide login message
+  file: path=/home/vagrant/.hushlogin
+        owner=vagrant
+        group=vagrant
+        mode=0644
+        state=touch
+
+- name: install bash_profile
+  file: src=dot.bash_profile
+        dest=/home/vagrant/.bash_profile
+        owner=vagrant
+        group=vagrant
+        mode=0644
+
+- name: install packages
+  apt: pkg={{ item }} state=latest update_cache=yes cache_valid_time=3600
+  with_items:
+    - git
+    - make
+    - python-dev
+    - python-virtualenv
+  environment:
+    LC_ALL: en_US.UTF-8
+
+- name: install pip requirements
+  pip: requirements=/vagrant/requirements.txt virtualenv=/vagrant/venv
+
+- name: install pip development requirements
+  pip: requirements=/vagrant/dev-requirements.txt virtualenv=/vagrant/venv
