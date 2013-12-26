@@ -1,18 +1,10 @@
 #!/usr/bin/env python
 
 import json
-from hashlib import sha256
 from time import time
 
-import requests
-from Crypto.Cipher import AES
+from api import decrypt, request
 
-URL = 'https://feelinsonice-hrd.appspot.com/bq/'
-SECRET = b'iEk21fuwZApXlz93750dmW22pw389dPwOk'
-STATIC_TOKEN = 'm198sOkJEn37DjqZ32lpRu76xmw288xSQ9'
-BLOB_ENCRYPTION_KEY = 'M02cnQ51Ji97vwT4'
-HASH_PATTERN = ('00011101111011100011110101011110'
-                '11010001001110011000110001000110')
 MEDIA_IMAGE = 0
 MEDIA_VIDEO = 1
 FRIEND_CONFIRMED = 0
@@ -20,18 +12,6 @@ FRIEND_UNCONFIRMED = 1
 FRIEND_BLOCKED = 2
 PRIVACY_EVERYONE = 0
 PRIVACY_FRIENDS = 1
-
-
-def make_request_token(a, b):
-    hash_a = sha256(SECRET + a.encode('utf-8')).hexdigest()
-    hash_b = sha256(b.encode('utf-8') + SECRET).hexdigest()
-    return ''.join((hash_b[i] if c == '1' else hash_a[i]
-                    for i, c in enumerate(HASH_PATTERN)))
-
-
-def pkcs5_pad(data, blocksize=16):
-    pad_count = blocksize - len(data) % blocksize
-    return data + (chr(pad_count) * pad_count).encode('utf-8')
 
 
 def is_video(data):
@@ -48,20 +28,6 @@ def get_file_extension(media_type):
     if media_type == MEDIA_IMAGE:
         return 'jpg'
     return ''
-
-
-def decrypt(data):
-    cipher = AES.new(BLOB_ENCRYPTION_KEY, AES.MODE_ECB)
-    return cipher.decrypt(pkcs5_pad(data))
-
-
-def encrypt(data):
-    cipher = AES.new(BLOB_ENCRYPTION_KEY, AES.MODE_ECB)
-    return cipher.encrypt(pkcs5_pad(data))
-
-
-def timestamp():
-    return int(round(time() * 1000))
 
 
 def _map_keys(snap):
@@ -96,25 +62,7 @@ class Snapchat(object):
         self.auth_token = None
 
     def _request(self, endpoint, data=None, raise_for_status=True):
-        """Wrapper method for calling Snapchat API which adds required form
-        data before sending the request.
-
-        :param endpoint: URL for API endpoint
-        :param data: Dictionary containing form data
-        :param raise_for_status: Raise exception for 4xx and 5xx status codes
-        """
-        now = timestamp()
-        if data is None:
-            data = {}
-        data.update({
-            'timestamp': now,
-            'req_token': make_request_token(self.auth_token or STATIC_TOKEN,
-                                            str(now))
-        })
-        r = requests.post(URL + endpoint, data=data)
-        if raise_for_status:
-            r.raise_for_status()
-        return r
+        return request(endpoint, self.auth_token, data, raise_for_status)
 
     def _unset_auth(self):
         self.username = None
@@ -123,7 +71,7 @@ class Snapchat(object):
     def login(self, username, password):
         """Login to Snapchat account
         Returns a dict containing user information on successful login, the
-        data return is similar to get_updates.
+        data returned is similar to get_updates.
 
         :param username Snapchat username
         :param password Snapchat password
