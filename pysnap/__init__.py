@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 import json
+import os.path
 from time import time
 
-from api import decrypt, request
+from api import encrypt, decrypt, make_media_id, request
 
 MEDIA_IMAGE = 0
 MEDIA_VIDEO = 1
@@ -30,6 +31,14 @@ def get_file_extension(media_type):
     if media_type == MEDIA_IMAGE:
         return 'jpg'
     return ''
+
+
+def get_media_type(data):
+    if is_video(data):
+        return MEDIA_VIDEO
+    if is_image(data):
+        return MEDIA_IMAGE
+    return None
 
 
 def _map_keys(snap):
@@ -63,8 +72,9 @@ class Snapchat(object):
         self.username = None
         self.auth_token = None
 
-    def _request(self, endpoint, data=None, raise_for_status=True):
-        return request(endpoint, self.auth_token, data, raise_for_status)
+    def _request(self, endpoint, data=None, files=None, raise_for_status=True):
+        return request(endpoint, self.auth_token, data, files,
+                       raise_for_status)
 
     def _unset_auth(self):
         self.username = None
@@ -260,3 +270,40 @@ class Snapchat(object):
         Returns a list of currently blocked users.
         """
         return [f for f in self.get_friends() if f['type'] == FRIEND_BLOCKED]
+
+    def upload(self, path):
+        """Upload media
+        Returns the media ID on success. The media ID is used when sending
+        the snap.
+        """
+        if not os.path.exists(path):
+            raise ValueError('No such file: {0}'.format(path))
+
+        with open(path) as f:
+            data = f.read()
+
+        media_type = get_media_type(data)
+        if media_type is None:
+            raise ValueError('Could not determine media type for given data')
+
+        media_id = make_media_id(self.username)
+        r = self._request('upload', {
+            'username': self.username,
+            'media_id': media_id,
+            'type': media_type
+            }, files={'data': encrypt(data)})
+
+        return media_id if len(r.content) == 0 else None
+
+    def send(self, media_id, recipients, time=5):
+        """Send a snap. Requires a media_id returned by the upload method
+        Returns true if the snap was sent successfully
+        """
+        r = self._request('send', {
+            'username': self.username,
+            'media_id': media_id,
+            'recipient': recipients,
+            'time': time,
+            'zipped': '0'
+            })
+        return len(r.content) == 0

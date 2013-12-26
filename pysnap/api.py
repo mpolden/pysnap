@@ -7,6 +7,7 @@
 
 from hashlib import sha256
 from time import time
+from uuid import uuid4
 
 import requests
 from Crypto.Cipher import AES
@@ -50,7 +51,8 @@ def timestamp():
     return int(round(time() * 1000))
 
 
-def request(endpoint, auth_token, data=None, raise_for_status=True):
+def request(endpoint, auth_token, data=None, files=None,
+            raise_for_status=True):
     """Wrapper method for calling Snapchat API which adds the required auth
     token before sending the request.
 
@@ -66,7 +68,13 @@ def request(endpoint, auth_token, data=None, raise_for_status=True):
         'req_token': make_request_token(auth_token or STATIC_TOKEN,
                                         str(now))
     })
-    r = requests.post(URL + endpoint, data=data)
+    r = requests.post(URL + endpoint, data=data, files=files)
     if raise_for_status:
         r.raise_for_status()
     return r
+
+
+def make_media_id(username):
+    """Create a unique media identifier. Used when uploading media"""
+    return '{username}~{uuid}'.format(username=username.upper(),
+                                      uuid=str(uuid4()))
