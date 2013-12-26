@@ -3,7 +3,7 @@
 import unittest
 
 from pysnap import is_image, is_video
-from pysnap.api import make_request_token, pkcs5_pad
+from pysnap.utils import make_request_token, pkcs5_pad
 
 
 class ModuleTestCase(unittest.TestCase):
@@ -21,7 +21,7 @@ class ModuleTestCase(unittest.TestCase):
         self.assertTrue(is_video(b'\x00\x00'))
 
 
-class ApiTestCase(unittest.TestCase):
+class UtilsTestCase(unittest.TestCase):
 
     def test_make_request_token(self):
         self.assertEqual(('c6a633f0c2c9e72f7cdf49f888fc64ee7179096c57fdedaad1f'

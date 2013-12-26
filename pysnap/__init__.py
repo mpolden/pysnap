@@ -4,7 +4,7 @@ import json
 import os.path
 from time import time
 
-from api import encrypt, decrypt, make_media_id, request
+from utils import encrypt, decrypt, make_media_id, request
 
 MEDIA_IMAGE = 0
 MEDIA_VIDEO = 1
