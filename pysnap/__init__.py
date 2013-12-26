@@ -7,6 +7,8 @@ from api import decrypt, request
 
 MEDIA_IMAGE = 0
 MEDIA_VIDEO = 1
+MEDIA_VIDEO_NOAUDIO = 2
+
 FRIEND_CONFIRMED = 0
 FRIEND_UNCONFIRMED = 1
 FRIEND_BLOCKED = 2
@@ -23,7 +25,7 @@ def is_image(data):
 
 
 def get_file_extension(media_type):
-    if media_type == MEDIA_VIDEO:
+    if media_type in (MEDIA_VIDEO, MEDIA_VIDEO_NOAUDIO):
         return 'mp4'
     if media_type == MEDIA_IMAGE:
         return 'jpg'
