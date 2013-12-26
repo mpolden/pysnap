@@ -223,6 +223,12 @@ class Snapchat(object):
         """
         return self.get_updates().get('friends', [])
 
+    def get_best_friends(self):
+        """Get best friends
+        Returns a list of best friends.
+        """
+        return self.get_updates().get('bests', [])
+
     def block(self, username):
         """Block a user
         Returns true on success.
