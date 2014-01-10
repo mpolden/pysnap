@@ -239,6 +239,36 @@ class Snapchat(object):
         """
         return self.get_updates().get('bests', [])
 
+    def add_friend(self, username):
+        """Add user as friend
+        Returns JSON response.
+        Expected messages:
+            Success: '{username} is now your friend!'
+            Pending: '{username} is private. Friend request sent.'
+            Failure: 'Sorry! Couldn't find {username}'
+
+        :param username: Username to add as a friend
+        """
+        r = self._request('friend', {
+            'action': 'add',
+            'friend': username,
+            'username': self.username
+        })
+        return r.json()
+
+    def delete_friend(self, username):
+        """Remove user from friends
+        Returns true on success.
+
+        :param username: Username to remove from friends
+        """
+        r = self._request('friend', {
+            'action': 'delete',
+            'friend': username,
+            'username': self.username
+        })
+        return r.json().get('logged')
+
     def block(self, username):
         """Block a user
         Returns true on success.
