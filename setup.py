@@ -14,7 +14,7 @@ setup(
     author_email='martin.polden@gmail.com',
     url='https://github.com/martinp/pysnap',
     packages=['pysnap'],
-    scripts=['bin/get_snaps.py'],
+    scripts=['bin/get_snaps.py', 'bin/get_stories.py'],
     install_requires=[
         'docopt>=0.6',
         'pycrypto>=2.6',
