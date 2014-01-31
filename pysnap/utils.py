@@ -42,6 +42,11 @@ def decrypt(data):
     return cipher.decrypt(pkcs5_pad(data))
 
 
+def decrypt_story(data, key, iv):
+    cipher = AES.new(key, AES.MODE_CBC, iv)
+    return cipher.decrypt(pkcs5_pad(data))
+
+
 def encrypt(data):
     cipher = AES.new(BLOB_ENCRYPTION_KEY, AES.MODE_ECB)
     return cipher.encrypt(pkcs5_pad(data))
@@ -52,13 +57,14 @@ def timestamp():
 
 
 def request(endpoint, auth_token, data=None, files=None,
-            raise_for_status=True):
+            raise_for_status=True, req_type='post'):
     """Wrapper method for calling Snapchat API which adds the required auth
     token before sending the request.
 
     :param endpoint: URL for API endpoint
     :param data: Dictionary containing form data
     :param raise_for_status: Raise exception for 4xx and 5xx status codes
+    :param req_type: The request type (GET, POST). Defaults to POST
     """
     now = timestamp()
     if data is None:
@@ -68,7 +74,10 @@ def request(endpoint, auth_token, data=None, files=None,
         'req_token': make_request_token(auth_token or STATIC_TOKEN,
                                         str(now))
     })
-    r = requests.post(URL + endpoint, data=data, files=files)
+    if req_type == 'post':
+        r = requests.post(URL + endpoint, data=data, files=files)
+    else:
+        r = requests.get(URL + endpoint, params=data)
     if raise_for_status:
         r.raise_for_status()
     return r

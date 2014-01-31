@@ -1,4 +1,7 @@
 *.pyc
+*.*~
 .vagrant/
 MANIFEST
 pysnap.egg-info
+build/
+dist/
