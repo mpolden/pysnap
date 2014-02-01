@@ -1,0 +1,4 @@
+autopep8==0.9.7
+flake8==2.1.0
+nose==1.3.0
+responses==0.2.0
