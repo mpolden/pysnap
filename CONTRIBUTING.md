@@ -11,7 +11,7 @@ What to work on
 ===============
 
 There a few API methods that haven't been implemented yet. You can use the
-(disclosure by GibSec)[http://gibsonsec.org/snapchat/fulldisclosure/] when
+[disclosure by GibSec](http://gibsonsec.org/snapchat/fulldisclosure/) when
 implementing the missing methods.
 
 Some of the missing methods are (incomplete list):
