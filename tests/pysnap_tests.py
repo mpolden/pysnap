@@ -2,8 +2,12 @@
 
 import unittest
 
-from pysnap import is_image, is_video
-from pysnap.utils import make_request_token, pkcs5_pad
+import responses
+
+from requests.exceptions import HTTPError
+
+from pysnap import is_image, is_video, Snapchat
+from pysnap.utils import make_request_token, pkcs5_pad, URL
 
 
 class ModuleTestCase(unittest.TestCase):
@@ -30,6 +34,51 @@ class UtilsTestCase(unittest.TestCase):
     def test_pkcs5_pad(self):
         self.assertEqual(b'\x10' * 16, pkcs5_pad(b''))
         self.assertEqual(b'foo\r\r\r\r\r\r\r\r\r\r\r\r\r', pkcs5_pad(b'foo'))
+
+
+class SnapchatTestCase(unittest.TestCase):
+
+    def setUp(self):
+        responses.reset()
+        self.snapchat = Snapchat()
+
+    @responses.activate
+    def test_login(self):
+        responses.add(responses.POST, URL + 'login',
+                      body='{}', status=200,
+                      content_type='application/json')
+        self.assertEqual({}, self.snapchat.login('eggs', 'spam'))
+
+        responses.reset()
+        responses.add(responses.POST, URL + 'login',
+                      body='{}', status=404,
+                      content_type='application/json')
+        self.assertRaises(HTTPError, self.snapchat.login, 'eggs', 'spam')
+
+        responses.reset()
+        responses.add(responses.POST, URL + 'login',
+                      body='', status=200,
+                      content_type='application/json')
+        self.assertRaises(ValueError, self.snapchat.login, 'eggs', 'spam')
+
+    @responses.activate
+    def test_logout(self):
+        responses.add(responses.POST, URL + 'logout',
+                      body='', status=200,
+                      content_type='application/json')
+        self.assertTrue(self.snapchat.logout())
+
+        responses.reset()
+        responses.add(responses.POST, URL + 'logout',
+                      body='{}', status=404,
+                      content_type='application/json')
+        self.assertRaises(HTTPError, self.snapchat.logout)
+
+        responses.reset()
+        responses.add(responses.POST, URL + 'logout',
+                      body='{}', status=200,
+                      content_type='application/json')
+        self.assertFalse(self.snapchat.logout())
 
 
 if __name__ == '__main__':
