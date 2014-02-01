@@ -74,10 +74,12 @@ def request(endpoint, auth_token, data=None, files=None,
         'req_token': make_request_token(auth_token or STATIC_TOKEN,
                                         str(now))
     })
+    headers = {'User-Agent': 'Snapchat/6.1.2 (iPhone6,2; iOS 7.0.4; gzip)'}
     if req_type == 'post':
-        r = requests.post(URL + endpoint, data=data, files=files)
+        r = requests.post(URL + endpoint, data=data, files=files,
+                          headers=headers)
     else:
-        r = requests.get(URL + endpoint, params=data)
+        r = requests.get(URL + endpoint, params=data, headers=headers)
     if raise_for_status:
         r.raise_for_status()
     return r
