@@ -1,17 +1,43 @@
 pysnap
 ======
-Implementation of Snapchat API in Python. Partially based on
-https://github.com/dstelljes/php-snapchat
+A Python library for the Snapchat API
 
-Dependencies
+The implementation is partially based on php-snapchat by dstelljes and the
+[full disclosure by GibSec](http://gibsonsec.org/snapchat/fulldisclosure/).
+
+Installation
 ------------
 
-    pip install -r requirements.txt
+Pysnap is a standard Python package (setuptools) which can be installed by
+running:
 
-Usage
------
+    python setup.py install
 
-    $ python pysnap/get_snaps.py -h
+If you prefer not to install it globally, you can install it inside a
+[virtualenv](http://www.virtualenv.org/).
+
+Example API usage
+-----------------
+
+```python
+
+from pprint import pprint
+from pysnap import Snapchat
+
+s = Snapchat()
+s.login('username', 'password')
+snaps = s.get_snaps()
+
+pprint(snaps)
+```
+
+Basic clients
+-------------
+
+There are two basic clients included in the package, `get_stories.py` for
+downloading stories and `get_snaps.py` for downloading snaps.
+
+    $ get_snaps.py -h
     Basic Snapchat client
 
     Usage:
