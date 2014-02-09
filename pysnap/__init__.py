@@ -26,6 +26,10 @@ def is_image(data):
     return len(data) > 1 and data[0:2] == b'\xFF\xD8'
 
 
+def is_zip(data):
+    return len(data) > 1 and data[0:2] == 'PK'
+
+
 def get_file_extension(media_type):
     if media_type in (MEDIA_VIDEO, MEDIA_VIDEO_NOAUDIO):
         return 'mp4'
@@ -173,7 +177,9 @@ class Snapchat(object):
         r = self._request('story_blob', {'story_id': story_id},
                           raise_for_status=False, req_type='get')
         data = decrypt_story(r.content, story_key, story_iv)
-        return data if is_image(data) or is_video(data) else None
+        if any((is_image(data), is_video(data), is_zip(data))):
+            return data
+        return None
 
     def get_blob(self, snap_id):
         """Get the image or video of a given snap
@@ -185,7 +191,9 @@ class Snapchat(object):
         r = self._request('blob', {'username': self.username, 'id': snap_id},
                           raise_for_status=False)
         data = decrypt(r.content)
-        return data if is_image(data) or is_video(data) else None
+        if any((is_image(data), is_video(data), is_zip(data))):
+            return data
+        return None
 
     def register(self, username, password, email, birthday):
         """Register a new Snapchat account

@@ -17,10 +17,34 @@ from __future__ import print_function
 import os.path
 import sys
 from getpass import getpass
+from zipfile import is_zipfile, ZipFile
 
 from docopt import docopt
 
 from pysnap import get_file_extension, Snapchat
+
+
+def process_snap(s, snap, path, quiet=False):
+    filename = '{0}_{1}.{2}'.format(snap['sender'], snap['id'],
+                                    get_file_extension(snap['media_type']))
+    abspath = os.path.abspath(os.path.join(path, filename))
+    if os.path.isfile(abspath):
+        return
+    data = s.get_blob(snap['id'])
+    if data is None:
+        return
+    with open(abspath, 'wb') as f:
+        f.write(data)
+        if not quiet:
+            print('Saved: {0}'.format(abspath))
+
+    if is_zipfile(abspath):
+        zipped_snap = ZipFile(abspath)
+        unzip_dir = os.path.join(path, '{0}_{1}'.format(snap['sender'],
+                                                        snap['id']))
+        zipped_snap.extractall(unzip_dir)
+        if not quiet:
+            print('Unzipped {0} to {1}'.format(filename, unzip_dir))
 
 
 def main():
@@ -43,18 +67,7 @@ def main():
         sys.exit(1)
 
     for snap in s.get_snaps():
-        filename = '{0}_{1}.{2}'.format(snap['sender'], snap['id'],
-                                        get_file_extension(snap['media_type']))
-        abspath = os.path.abspath(os.path.join(path, filename))
-        if os.path.isfile(abspath):
-            continue
-        data = s.get_blob(snap['id'])
-        if data is None:
-            continue
-        with open(abspath, 'wb') as f:
-            f.write(data)
-            if not quiet:
-                print('Saved: {0}'.format(abspath))
+        process_snap(s, snap, path, quiet)
 
 
 if __name__ == '__main__':
