@@ -139,7 +139,7 @@ class Snapchat(object):
         updates = self.get_updates(update_timestamp)
         # Filter out snaps containing c_id as these are sent snaps
         return [_map_keys(snap) for snap in updates['snaps']
-                if not 'c_id' in snap]
+                if 'c_id' not in snap]
 
     def get_friend_stories(self, update_timestamp=0):
         """Get stories
@@ -210,7 +210,7 @@ class Snapchat(object):
             'password': password,
             'email': email
         })
-        if not 'token' in r.json():
+        if 'token' not in r.json():
             return False
 
         r = self._request('registeru', {
