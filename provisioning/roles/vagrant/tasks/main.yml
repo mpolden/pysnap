@@ -1,13 +1,6 @@
 ---
-- name: hide login message
-  file: path=/home/vagrant/.hushlogin
-        owner=vagrant
-        group=vagrant
-        mode=0644
-        state=touch
-
 - name: install bash_profile
-  file: src=dot.bash_profile
+  copy: src=dot.bash_profile
         dest=/home/vagrant/.bash_profile
         owner=vagrant
         group=vagrant
@@ -20,11 +13,14 @@
     - make
     - python-dev
     - python-virtualenv
+    - virtualenvwrapper
   environment:
     LC_ALL: en_US.UTF-8
 
 - name: install pip requirements
+  sudo_user: vagrant
   pip: requirements=/vagrant/requirements.txt virtualenv=/vagrant/venv
 
 - name: install pip development requirements
+  sudo_user: vagrant
   pip: requirements=/vagrant/dev-requirements.txt virtualenv=/vagrant/venv

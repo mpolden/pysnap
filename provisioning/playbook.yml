@@ -1,5 +1,5 @@
 ---
-- hosts: development
+- hosts: all
   sudo: yes
   roles:
     - ntp
