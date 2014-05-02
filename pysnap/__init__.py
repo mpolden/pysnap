@@ -357,7 +357,7 @@ class Snapchat(object):
         if not os.path.exists(path):
             raise ValueError('No such file: {0}'.format(path))
 
-        with open(path) as f:
+        with open(path, 'rb') as f:
             data = f.read()
 
         media_type = get_media_type(data)
