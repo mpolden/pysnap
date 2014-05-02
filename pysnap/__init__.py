@@ -195,35 +195,6 @@ class Snapchat(object):
             return data
         return None
 
-    def register(self, username, password, email, birthday):
-        """Register a new Snapchat account
-        Returns a dict contatining user information on success and False on
-        failure.
-
-        :param username: Username
-        :param password: Password
-        :param email: Email address
-        :param birthday: Birthday (yyyy-mm-dd)
-        """
-        r = self._request('register', {
-            'birthday': birthday,
-            'password': password,
-            'email': email
-        })
-        if 'token' not in r.json():
-            return False
-
-        r = self._request('registeru', {
-            'email': email,
-            'username': username
-        })
-        result = r.json()
-        if 'auth_token' in result:
-            self.auth_token = result['auth_token']
-        if 'username' in result:
-            self.username = result['username']
-        return result
-
     def send_events(self, events, data=None):
         """Send event data
         Returns true on success.
