@@ -69,13 +69,13 @@ def request(endpoint, auth_token, data=None, files=None,
     now = timestamp()
     if data is None:
         data = {}
-    data.update({
-        'timestamp': now,
-        'req_token': make_request_token(auth_token or STATIC_TOKEN,
-                                        str(now))
-    })
     headers = {'User-Agent': 'Snapchat/6.1.2 (iPhone6,2; iOS 7.0.4; gzip)'}
     if req_type == 'post':
+        data.update({
+            'timestamp': now,
+            'req_token': make_request_token(auth_token or STATIC_TOKEN,
+                                            str(now))
+        })
         r = requests.post(URL + endpoint, data=data, files=files,
                           headers=headers)
     else:
