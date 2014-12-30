@@ -69,7 +69,11 @@ def request(endpoint, auth_token, data=None, files=None,
     now = timestamp()
     if data is None:
         data = {}
-    headers = {'User-Agent': 'Snapchat/8.1.1 (iPhone5,1; iOS 6.1.4; gzip)'}
+    headers = {
+        'User-Agent': 'Snapchat/8.1.1 (iPhone5,1; iOS 6.1.4; gzip)',
+        'Accept-Language': 'en-US;q=1, en;q=0.9',
+        'Accept-Locale': 'en'
+    }
     if req_type == 'post':
         data.update({
             'timestamp': now,
