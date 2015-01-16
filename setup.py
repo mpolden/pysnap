@@ -7,7 +7,7 @@ except ImportError:
 
 setup(
     name='pysnap',
-    version='0.1',
+    version='0.1.1',
     description='Snapchat API client in Python',
     long_description=open('README.md').read(),
     author='Martin Polden',
