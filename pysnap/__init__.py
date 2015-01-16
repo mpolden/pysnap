@@ -233,6 +233,23 @@ class Snapchat(object):
         ]
         return self.send_events(events, data)
 
+    def mark_screenshot(self, snap_id, view_duration=1):
+        """Mark a snap as screenshotted
+        Returns true on success.
+
+        :param snap_id: Snap id to mark as viewed
+        :param view_duration: Number of seconds snap was viewed
+        """
+        now = time()
+        data = {snap_id: {u't': now, u'sv': view_duration, u'c': 3}}
+        events = [
+            {
+                u'eventName': u'SNAP_SCREENSHOT', u'params': {u'id': snap_id},
+                u'ts': int(round(now)) - view_duration
+            }
+        ]
+        return self.send_events(events, data)
+
     def update_privacy(self, friends_only):
         """Set privacy settings
         Returns true on success.
