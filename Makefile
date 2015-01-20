@@ -4,4 +4,4 @@ test:
 	nosetests
 
 lint:
-	flake8 --max-complexity=10 bin/*.py pysnap/*.py tests/*.py setup.py
+	find . -name '*.py' | xargs flake8 --max-complexity=8
