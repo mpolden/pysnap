@@ -388,3 +388,14 @@ class Snapchat(object):
             'zipped': '0'
             })
         return r.json()
+    
+    def clear_feed(self):
+        """Clear the user's feed
+        Returns true if feed was successfully cleared.
+        """
+
+        r = self._request('clear', {
+            'username': self.username
+        })
+
+        return len(r.content) == 0
