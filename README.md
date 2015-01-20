@@ -1,5 +1,8 @@
 pysnap
 ======
+
+[![Build Status](https://travis-ci.org/martinp/pysnap.png)](https://travis-ci.org/martinp/pysnap)
+
 A Python library for the Snapchat API
 
 The implementation is partially based on php-snapchat by dstelljes and the
