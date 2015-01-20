@@ -374,11 +374,11 @@ class Snapchat(object):
             'zipped': '0'
             })
         return len(r.content) == 0
-    
+
     def send_to_story(self, media_id, time=5):
         """Send a snap to your story. Requires a media_id returned by the upload method
            Returns true if the snap was sent successfully.
-        """                                                 
+        """
         r = self._request('post_story', {
             'username': self.username,
             'media_id': media_id,
@@ -388,7 +388,7 @@ class Snapchat(object):
             'zipped': '0'
             })
         return r.json()
-    
+
     def clear_feed(self):
         """Clear the user's feed
         Returns true if feed was successfully cleared.
