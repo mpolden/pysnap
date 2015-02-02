@@ -375,7 +375,7 @@ class Snapchat(object):
             })
         return len(r.content) == 0
 
-    def send_to_story(self, media_id, time=5):
+    def send_to_story(self, media_id, time=5, media_type = 0):
         """Send a snap to your story. Requires a media_id returned by the upload method
            Returns true if the snap was sent successfully.
         """
@@ -384,7 +384,7 @@ class Snapchat(object):
             'media_id': media_id,
             'client_id': media_id,
             'time': time,
-            'type': 0,
+            'type': media_type,
             'zipped': '0'
             })
         return r.json()
