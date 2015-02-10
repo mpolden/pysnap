@@ -27,7 +27,7 @@ def is_image(data):
 
 
 def is_zip(data):
-    return len(data) > 1 and data[0:2] == 'PK'
+    return len(data) > 1 and data[0:2] == b'PK'
 
 
 def get_file_extension(media_type):
