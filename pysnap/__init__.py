@@ -176,8 +176,7 @@ class Snapchat(object):
         """
         r = self._request('story_blob', {'story_id': story_id},
                           raise_for_status=False, req_type='get')
-        data = decrypt_story(r.content, story_key.decode('base64'),
-                             story_iv.decode('base64'))
+        data = decrypt_story(r.content, story_key, story_iv)
         if any((is_image(data), is_video(data), is_zip(data))):
             return data
         return None
