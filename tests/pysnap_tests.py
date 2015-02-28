@@ -45,9 +45,11 @@ class SnapchatTestCase(unittest.TestCase):
     @responses.activate
     def test_login(self):
         responses.add(responses.POST, URL + 'login',
-                      body='{}', status=200,
+                      body='{"auth_token":"123","username":"eggs"}',
+                      status=200,
                       content_type='application/json')
-        self.assertEqual({}, self.snapchat.login('eggs', 'spam'))
+        self.assertEqual({"auth_token": "123", "username": "eggs"},
+                         self.snapchat.login('eggs', 'spam'))
 
         responses.reset()
         responses.add(responses.POST, URL + 'login',
@@ -60,6 +62,13 @@ class SnapchatTestCase(unittest.TestCase):
                       body='', status=200,
                       content_type='application/json')
         self.assertRaises(ValueError, self.snapchat.login, 'eggs', 'spam')
+
+        responses.reset()
+        responses.add(responses.POST, URL + 'login',
+                      body='{"status":"401","message":"Incorrect password"}',
+                      status=200,
+                      content_type='application/json')
+        self.assertRaises(Exception, self.snapchat.login, 'eggs', 'spam')
 
     @responses.activate
     def test_logout(self):
