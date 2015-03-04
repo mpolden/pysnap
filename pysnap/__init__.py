@@ -104,6 +104,10 @@ class Snapchat(object):
             self.auth_token = result['auth_token']
         if 'username' in result:
             self.username = username
+
+        if self.username is None and self.auth_token is None:
+            raise Exception(result['status'], result['message'])
+
         return result
 
     def logout(self):
