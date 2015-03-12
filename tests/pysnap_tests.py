@@ -44,27 +44,31 @@ class SnapchatTestCase(unittest.TestCase):
 
     @responses.activate
     def test_login(self):
-        responses.add(responses.POST, URL + 'login',
-                      body='{"auth_token":"123","username":"eggs"}',
+        login_url = URL[0:-3] + 'loq/login'
+
+        responses.add(responses.POST, login_url,
+                      body='{"updates_response": \
+                            {"auth_token":"123","username":"eggs"}}',
                       status=200,
                       content_type='application/json')
-        self.assertEqual({"auth_token": "123", "username": "eggs"},
+        self.assertEqual({"updates_response": {
+                          "auth_token": "123", "username": "eggs"}},
                          self.snapchat.login('eggs', 'spam'))
 
         responses.reset()
-        responses.add(responses.POST, URL + 'login',
+        responses.add(responses.POST, login_url,
                       body='{}', status=404,
                       content_type='application/json')
         self.assertRaises(HTTPError, self.snapchat.login, 'eggs', 'spam')
 
         responses.reset()
-        responses.add(responses.POST, URL + 'login',
+        responses.add(responses.POST, login_url,
                       body='', status=200,
                       content_type='application/json')
         self.assertRaises(ValueError, self.snapchat.login, 'eggs', 'spam')
 
         responses.reset()
-        responses.add(responses.POST, URL + 'login',
+        responses.add(responses.POST, login_url,
                       body='{"status":"401","message":"Incorrect password"}',
                       status=200,
                       content_type='application/json')
