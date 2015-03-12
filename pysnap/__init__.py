@@ -100,10 +100,14 @@ class Snapchat(object):
             'password': password
         })
         result = r.json()
-        if 'auth_token' in result:
-            self.auth_token = result['auth_token']
-        if 'username' in result:
-            self.username = username
+
+        if 'updates_response' in result:
+
+            if 'auth_token' in result['updates_response']:
+                self.auth_token = result['updates_response']['auth_token']
+
+            if 'username' in result['updates_response']:
+                self.username = username
 
         if self.username is None and self.auth_token is None:
             raise Exception(result['status'], result['message'])
@@ -307,7 +311,7 @@ class Snapchat(object):
             'friend': username,
             'username': self.username
         })
-        return r.json().get('logged')
+        return r.json()['updates_response'].get('logged')
 
     def block(self, username):
         """Block a user

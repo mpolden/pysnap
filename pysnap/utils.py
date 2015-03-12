@@ -74,6 +74,12 @@ def request(endpoint, auth_token, data=None, files=None,
         'Accept-Language': 'en-US;q=1, en;q=0.9',
         'Accept-Locale': 'en'
     }
+
+    if endpoint == 'login':
+        URL = 'https://feelinsonice-hrd.appspot.com/loq/'
+    else:
+        URL = 'https://feelinsonice-hrd.appspot.com/bq/'
+
     if req_type == 'post':
         data.update({
             'timestamp': now,
