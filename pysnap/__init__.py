@@ -110,7 +110,7 @@ class Snapchat(object):
                 self.username = username
 
         if self.username is None and self.auth_token is None:
-            raise Exception(result['status'], result['message'])
+            raise Exception(result.get('message', 'unknown error'))
 
         return result
 
