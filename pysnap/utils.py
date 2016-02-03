@@ -10,9 +10,10 @@ from time import time
 from uuid import uuid4
 
 import requests
-from Crypto.Cipher import AES
 
 URL = 'https://feelinsonice-hrd.appspot.com/bq/'
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
 
 SECRET = b'iEk21fuwZApXlz93750dmW22pw389dPwOk'
 STATIC_TOKEN = 'm198sOkJEn37DjqZ32lpRu76xmw288xSQ9'
@@ -38,18 +39,24 @@ def pkcs5_pad(data, blocksize=16):
 
 
 def decrypt(data):
-    cipher = AES.new(BLOB_ENCRYPTION_KEY, AES.MODE_ECB)
-    return cipher.decrypt(pkcs5_pad(data))
+    cipher = Cipher(algorithms.AES(BLOB_ENCRYPTION_KEY), modes.ECB(),
+                    backend=default_backend())
+    decryptor = cipher.decryptor()
+    return decryptor.update(pkcs5_pad(data)) + decryptor.finalize()
 
 
 def decrypt_story(data, key, iv):
-    cipher = AES.new(key, AES.MODE_CBC, iv)
-    return cipher.decrypt(pkcs5_pad(data))
+    cipher = Cipher(algorithms.AES(key), modes.CBC(iv),
+                    backend=default_backend())
+    decryptor = cipher.decryptor()
+    return decryptor.update(pkcs5_pad(data)) + decryptor.finalize()
 
 
 def encrypt(data):
-    cipher = AES.new(BLOB_ENCRYPTION_KEY, AES.MODE_ECB)
-    return cipher.encrypt(pkcs5_pad(data))
+    cipher = Cipher(algorithms.AES(BLOB_ENCRYPTION_KEY), modes.ECB(),
+                    backend=default_backend())
+    encryptor = cipher.encryptor()
+    return encryptor.update(pkcs5_pad(data)) + encryptor.finalize()
 
 
 def timestamp():
