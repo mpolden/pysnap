@@ -14,8 +14,8 @@ import requests
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 
-BASE_URL = 'https://feelinsonice-hrd.appspot.com/'
-LOGIN_BASE_URL = 'https://app.snapchat.com/'
+URL = 'https://feelinsonice-hrd.appspot.com/'
+AUTH_URL = 'https://app.snapchat.com/'
 
 SECRET = b'iEk21fuwZApXlz93750dmW22pw389dPwOk'
 STATIC_TOKEN = 'm198sOkJEn37DjqZ32lpRu76xmw288xSQ9'
@@ -79,15 +79,16 @@ def request(endpoint, auth_token, data=None, files=None,
     if data is None:
         data = {}
     headers = {
-        'User-Agent': 'Snapchat/9.2.0.0 (A0001; Android 4.4.4#5229c4ef56#19; gzip)',
+        'User-Agent': 'Snapchat/9.2.0.0 (A0001; '
+                      'Android 4.4.4#5229c4ef56#19; gzip)',
         'Accept-Language': 'en-US;q=1, en;q=0.9',
         'Accept-Locale': 'en'
     }
 
     if endpoint == 'login':
-        url = LOGIN_BASE_URL + 'loq/'
+        url = AUTH_URL + 'loq/'
     else:
-        url = BASE_URL + 'bq/'
+        url = URL + 'bq/'
 
     if req_type == 'post':
         data.update({
