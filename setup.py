@@ -16,9 +16,9 @@ setup(
     packages=['pysnap'],
     scripts=['bin/get_snaps.py', 'bin/get_stories.py'],
     install_requires=[
-        'docopt>=0.6',
-        'pycrypto>=2.6',
-        'requests>=2.0'
+        'docopt>=0.6.1',
+        'requests>=2.2.1',
+        'cryptography>=1.2.2',
     ],
     license=open('LICENSE').read()
 )
