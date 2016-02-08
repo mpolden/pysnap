@@ -7,7 +7,7 @@ import responses
 from requests.exceptions import HTTPError
 
 from pysnap import is_image, is_video, Snapchat
-from pysnap.utils import make_request_token, pkcs5_pad, URL
+from pysnap.utils import make_request_token, pkcs5_pad, URL, AUTH_URL
 
 
 class ModuleTestCase(unittest.TestCase):
@@ -44,7 +44,7 @@ class SnapchatTestCase(unittest.TestCase):
 
     @responses.activate
     def test_login(self):
-        login_url = URL[0:-3] + 'loq/login'
+        login_url = AUTH_URL + 'loq/login'
 
         responses.add(responses.POST, login_url,
                       body='{"updates_response": \
@@ -76,19 +76,19 @@ class SnapchatTestCase(unittest.TestCase):
 
     @responses.activate
     def test_logout(self):
-        responses.add(responses.POST, URL + 'logout',
+        responses.add(responses.POST, URL + 'bq/logout',
                       body='', status=200,
                       content_type='application/json')
         self.assertTrue(self.snapchat.logout())
 
         responses.reset()
-        responses.add(responses.POST, URL + 'logout',
+        responses.add(responses.POST, URL + 'bq/logout',
                       body='{}', status=404,
                       content_type='application/json')
         self.assertRaises(HTTPError, self.snapchat.logout)
 
         responses.reset()
-        responses.add(responses.POST, URL + 'logout',
+        responses.add(responses.POST, URL + 'bq/logout',
                       body='{}', status=200,
                       content_type='application/json')
         self.assertFalse(self.snapchat.logout())

@@ -10,9 +10,12 @@ from time import time
 from uuid import uuid4
 
 import requests
-from Crypto.Cipher import AES
 
-URL = 'https://feelinsonice-hrd.appspot.com/bq/'
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
+
+URL = 'https://feelinsonice-hrd.appspot.com/'
+AUTH_URL = 'https://app.snapchat.com/'
 
 SECRET = b'iEk21fuwZApXlz93750dmW22pw389dPwOk'
 STATIC_TOKEN = 'm198sOkJEn37DjqZ32lpRu76xmw288xSQ9'
@@ -38,18 +41,24 @@ def pkcs5_pad(data, blocksize=16):
 
 
 def decrypt(data):
-    cipher = AES.new(BLOB_ENCRYPTION_KEY, AES.MODE_ECB)
-    return cipher.decrypt(pkcs5_pad(data))
+    cipher = Cipher(algorithms.AES(BLOB_ENCRYPTION_KEY), modes.ECB(),
+                    backend=default_backend())
+    decryptor = cipher.decryptor()
+    return decryptor.update(pkcs5_pad(data)) + decryptor.finalize()
 
 
 def decrypt_story(data, key, iv):
-    cipher = AES.new(key, AES.MODE_CBC, iv)
-    return cipher.decrypt(pkcs5_pad(data))
+    cipher = Cipher(algorithms.AES(key), modes.CBC(iv),
+                    backend=default_backend())
+    decryptor = cipher.decryptor()
+    return decryptor.update(pkcs5_pad(data)) + decryptor.finalize()
 
 
 def encrypt(data):
-    cipher = AES.new(BLOB_ENCRYPTION_KEY, AES.MODE_ECB)
-    return cipher.encrypt(pkcs5_pad(data))
+    cipher = Cipher(algorithms.AES(BLOB_ENCRYPTION_KEY), modes.ECB(),
+                    backend=default_backend())
+    encryptor = cipher.encryptor()
+    return encryptor.update(pkcs5_pad(data)) + encryptor.finalize()
 
 
 def timestamp():
@@ -70,15 +79,16 @@ def request(endpoint, auth_token, data=None, files=None,
     if data is None:
         data = {}
     headers = {
-        'User-Agent': 'Snapchat/8.1.1 (iPhone5,1; iOS 6.1.4; gzip)',
+        'User-Agent': 'Snapchat/9.2.0.0 (A0001; '
+                      'Android 4.4.4#5229c4ef56#19; gzip)',
         'Accept-Language': 'en-US;q=1, en;q=0.9',
         'Accept-Locale': 'en'
     }
 
     if endpoint == 'login':
-        URL = 'https://feelinsonice-hrd.appspot.com/loq/'
+        url = AUTH_URL + 'loq/'
     else:
-        URL = 'https://feelinsonice-hrd.appspot.com/bq/'
+        url = URL + 'bq/'
 
     if req_type == 'post':
         data.update({
@@ -86,10 +96,10 @@ def request(endpoint, auth_token, data=None, files=None,
             'req_token': make_request_token(auth_token or STATIC_TOKEN,
                                             str(now))
         })
-        r = requests.post(URL + endpoint, data=data, files=files,
+        r = requests.post(url + endpoint, data=data, files=files,
                           headers=headers)
     else:
-        r = requests.get(URL + endpoint, params=data, headers=headers)
+        r = requests.get(url + endpoint, params=data, headers=headers)
     if raise_for_status:
         r.raise_for_status()
     return r
