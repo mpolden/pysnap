@@ -1,7 +1,7 @@
 pysnap
 ======
 
-[![Build Status](https://travis-ci.org/martinp/pysnap.png)](https://travis-ci.org/martinp/pysnap)
+[![Build Status](https://travis-ci.org/mpolden/pysnap.png)](https://travis-ci.org/mpolden/pysnap)
 
 A Python library for the Snapchat API
 
