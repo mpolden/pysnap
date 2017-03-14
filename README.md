@@ -3,6 +3,8 @@ pysnap
 
 [![Build Status](https://travis-ci.org/mpolden/pysnap.png)](https://travis-ci.org/mpolden/pysnap)
 
+**Note: This project is NOT maintained. I don't provide any support for it.**
+
 A Python library for the Snapchat API
 
 The implementation is partially based on php-snapchat by dstelljes and the
